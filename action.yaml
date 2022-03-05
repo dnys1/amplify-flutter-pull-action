@@ -35,7 +35,7 @@ runs:
       uses: aws-actions/configure-aws-credentials@v1
       with:
         role-to-assume: ${{ inputs.role-arn }}
-        role-session-name: ${{ github.action }}
+        role-session-name: ${{ github.actor }}-${{ github.workflow }}-${{ github.action }}
         aws-region: ${{ inputs.region }}
     - name: Pull Amplify project
       shell: bash
