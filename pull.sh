@@ -28,13 +28,13 @@ AWS_PROFILE=cicd
 CONFIG_PATH=~/.aws/config
 CREDENTIALS_PATH=~/.aws/credentials
 
-cat <<EOF > $CONFIG_PATH
-[$AWS_PROFILE]
+cat <<EOF >> $CONFIG_PATH
+[profile $AWS_PROFILE]
 region=$AWS_REGION
 output=json
 EOF
 
-cat <<EOF > $CREDENTIALS_PATH
+cat <<EOF >> $CREDENTIALS_PATH
 [$AWS_PROFILE]
 aws_access_key_id=$AWS_ACCESS_KEY_ID
 aws_secret_access_key=$AWS_SECRET_ACCESS_KEY
@@ -69,16 +69,21 @@ PROVIDERS="{\
 \"awscloudformation\":$AWSCLOUDFORMATIONCONFIG\
 }"
 
+function checkSuccess {
+    if [[ ! -e "lib/amplifyconfiguration.dart" ]]; then
+        # Dump CLI logs
+        cat ~/.amplify/logs/*.log >&2
+        echo "Could not pull Amplify project. See logs above for details." >&2
+        exit 1
+    fi
+}
+trap checkSuccess EXIT
+
 amplify pull \
-    --verbose \
     --amplify $AMPLIFY \
     --frontend $FRONTEND \
     --providers $PROVIDERS \
-    --yes
-
-if [[ ! -e "lib/amplifyconfiguration.dart" ]]; then
-    # Dump CLI logs
-    cat ~/.amplify/logs/*.log >&2
-    echo "Could not pull Amplify project" >&2
-    exit 1
-fi
+    --yes \
+    # Suppress output and errors which do not affect the creation
+    # of amplifyconfiguration.dart
+    >/dev/null 2>&1
