@@ -14,8 +14,8 @@ Pulls an Amplify Flutter project in a Github Action.
     {
       "Effect": "Allow",
       "Action": [
-        "amplify:GetBackendEnvironment",
         "amplify:GetApp",
+        "amplify:GetBackendEnvironment",
         "cloudformation:ListStackResources",
         "s3:GetObject",
         "s3:ListBucket"
@@ -49,7 +49,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Amplify Flutter Pull
+      - name: Pull Amplify project
         uses: dnys1/amplify-flutter-pull-action@v1
         with:
           region: ${{ secrets.REGION }}
