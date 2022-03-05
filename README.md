@@ -5,7 +5,7 @@ Pulls an Amplify Flutter project in a Github Action.
 ## Getting Started
 
 1. Follow the [Github guide](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services) for creating an OIDC provider and role in IAM.
-2. Create a policy with the following permissions and attach it to the role.
+2. Create a policy with the following permissions and attach it to the role, replacing `<PROJECT_NAME>` and `<ENV_NAME>` with your Amplify project's name and environment name.
 
 ```json
 {
