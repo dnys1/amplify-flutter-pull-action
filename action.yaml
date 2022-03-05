@@ -1,5 +1,6 @@
 name: 'Amplify Flutter Pull'
 description: 'Pulls an Amplify Flutter project backend and creates the amplifyconfiguration.dart file.'
+author: 'Dillon Nys'
 inputs:
   app-id:
     description: 'The Amplify App ID of your project'
@@ -27,7 +28,7 @@ runs:
         node-version: '14'
     - name: Setup Amplify
       shell: bash
-      run: setup.sh
+      run: $GITHUB_ACTION_PATH/setup.sh
       env:
         AMPLIFY_VERSION: ${{ inputs.version }}
     - name: Setup AWS
@@ -38,7 +39,7 @@ runs:
         aws-region: ${{ inputs.region }}
     - name: Pull Amplify project
       shell: bash
-      run: pull.sh
+      run: $GITHUB_ACTION_PATH/pull.sh
       env:
         AWS_REGION: ${{ inputs.region }}
         AMPLIFY_APP_ID: ${{ inputs.app-id }}
