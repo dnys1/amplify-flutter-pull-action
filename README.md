@@ -4,31 +4,44 @@ Pulls an Amplify Flutter project in a Github Action.
 
 ## Getting Started
 
-1. Follow the [Github guide](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services) for creating an OIDC provider in IAM.
+1. Follow the [Github guide](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services) for creating an OIDC provider and role in IAM.
 2. Create a policy with the following permissions and attach it to the role.
 
 ```json
 {
   "Version": "2012-10-17",
   "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "amplify:GetApp",
-        "amplify:GetBackendEnvironment",
-        "cloudformation:ListStackResources",
-        "s3:GetObject",
-        "s3:ListBucket"
-      ],
-      "Resource": "*"
-    }
+      {
+        "Effect": "Allow",
+        "Action": [
+          "amplify:GetApp",
+          "amplify:GetBackendEnvironment",
+          "cloudformation:ListStackResources"
+        ],
+        "Resource": "*",
+        "Condition": {
+          "StringEqualsIfExists": {
+              "aws:ResourceTag/user:Application": "<PROJECT_NAME>"
+          }
+        }
+      },
+      {
+        "Effect": "Allow",
+        "Action": [
+          "s3:GetObject",
+          "s3:ListBucket"
+        ],
+        "Resource": [
+          "arn:aws:s3:::amplify-<PROJECT_NAME>-<ENV_NAME>-*"
+        ]
+      }
   ]
 }
 ```
 
 ## Usage
 
-Configure your action's environment with the role ARN from the previous step, the app ID of your Amplify project, and the name of the Amplify environment to pull.
+Configure your action's environment with the role ARN from the previous step, the app ID of your Amplify project, and the AWS region of your project. Optionally, you can set the name of the Amplify environment to pull, and the version of the CLI to use.
 
 ```yaml
 name: Build
@@ -44,7 +57,6 @@ jobs:
     # Required for AWS credentials action
     permissions:
       id-token: write
-      contents: read
 
     steps:
       - name: Checkout
