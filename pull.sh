@@ -10,7 +10,6 @@
 #   - AMPLIFY_ENV_NAME              # The name of the Amplify environment to pull
 #
 
-set -e
 IFS='|'
 
 #
@@ -79,11 +78,13 @@ function checkSuccess {
 }
 trap checkSuccess EXIT
 
+# Suppress output and errors which do not affect the creation
+# of amplifyconfiguration.dart
 amplify pull \
     --amplify $AMPLIFY \
     --frontend $FRONTEND \
     --providers $PROVIDERS \
-    --yes \
-    # Suppress output and errors which do not affect the creation
-    # of amplifyconfiguration.dart
-    >/dev/null 2>&1
+    --yes >/dev/null 2>&1
+    
+# Should be run last to determine exit code
+checkSuccess
