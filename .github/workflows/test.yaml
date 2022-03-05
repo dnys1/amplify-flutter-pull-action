@@ -15,12 +15,11 @@ jobs:
     # Required for AWS credentials action
     permissions:
       id-token: write
-      contents: read
 
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Amplify Flutter Pull
+      - name: Pull Amplify project
         uses: ./
         with:
           region: ${{ secrets.REGION }}
