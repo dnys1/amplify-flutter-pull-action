@@ -75,6 +75,8 @@ function checkSuccess {
         echo "Could not pull Amplify project. See logs above for details." >&2
         exit 1
     fi
+
+    echo "Successfully pulled Amplify project"
 }
 trap checkSuccess EXIT
 
