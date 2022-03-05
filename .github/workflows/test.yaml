@@ -11,12 +11,18 @@ jobs:
       fail-fast: true
       matrix:
         os: [ ubuntu-latest, macos-latest ]
+
+    # Required for AWS credentials action
+    permissions:
+      id-token: write
+      contents: read
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Amplify Flutter Pull
         uses: ./
         with:
-          region: us-west-2
+          region: ${{ secrets.REGION }}
           app-id: ${{ secrets.APP_ID }}
           role-arn: ${{ secrets.ROLE_ARN }}
