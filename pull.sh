@@ -20,31 +20,29 @@ IFS='|'
 # this is the officially correct way to use a session token.
 #
 if [[ -n $CI && -n $AWS_ACCESS_KEY_ID && -n $AWS_SECRET_ACCESS_KEY ]]; then
+    mkdir -p ~/.aws
 
-mkdir -p ~/.aws
+    AWS_PROFILE=cicd
+    CONFIG_PATH=~/.aws/config
+    CREDENTIALS_PATH=~/.aws/credentials
 
-AWS_PROFILE=cicd
-CONFIG_PATH=~/.aws/config
-CREDENTIALS_PATH=~/.aws/credentials
-
-cat <<EOF >> $CONFIG_PATH
-[profile $AWS_PROFILE]
-region=$AWS_REGION
-output=json
+cat <<-EOF >> $CONFIG_PATH
+    [profile $AWS_PROFILE]
+    region=$AWS_REGION
+    output=json
 EOF
 
-cat <<EOF >> $CREDENTIALS_PATH
-[$AWS_PROFILE]
-aws_access_key_id=$AWS_ACCESS_KEY_ID
-aws_secret_access_key=$AWS_SECRET_ACCESS_KEY
+cat <<-EOF >> $CREDENTIALS_PATH
+    [$AWS_PROFILE]
+    aws_access_key_id=$AWS_ACCESS_KEY_ID
+    aws_secret_access_key=$AWS_SECRET_ACCESS_KEY
 EOF
 
-# While it's recommended to use temporary credentials in CI/CD, it's
-# not required to run this script.
-if [[ -n $AWS_SESSION_TOKEN ]]; then
-    echo "aws_session_token=$AWS_SESSION_TOKEN" >> $CREDENTIALS_PATH
-fi
-
+    # While it's recommended to use temporary credentials in CI/CD, it's
+    # not required to run this script.
+    if [[ -n $AWS_SESSION_TOKEN ]]; then
+        echo "aws_session_token=$AWS_SESSION_TOKEN" >> $CREDENTIALS_PATH
+    fi
 fi
 
 FLUTTERCONFIG="{\
@@ -68,18 +66,6 @@ PROVIDERS="{\
 \"awscloudformation\":$AWSCLOUDFORMATIONCONFIG\
 }"
 
-function checkSuccess {
-    if [[ ! -e "lib/amplifyconfiguration.dart" ]]; then
-        # Dump CLI logs
-        cat ~/.amplify/logs/*.log >&2
-        echo "Could not pull Amplify project. See logs above for details." >&2
-        exit 1
-    fi
-
-    echo "Successfully pulled Amplify project"
-}
-trap checkSuccess EXIT
-
 # Suppress output and errors which do not affect the creation
 # of amplifyconfiguration.dart
 amplify pull \
@@ -87,6 +73,11 @@ amplify pull \
     --frontend $FRONTEND \
     --providers $PROVIDERS \
     --yes >/dev/null 2>&1
-    
-# Should be run last to determine exit code
-checkSuccess
+
+if [[ ! -e "lib/amplifyconfiguration.dart" ]]; then
+    # Dump CLI logs
+    cat ~/.amplify/logs/*.log >&2
+    echo "Could not pull Amplify project. See logs above for details." >&2
+    exit 1
+fi
+echo "Successfully pulled Amplify project"
