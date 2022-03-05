@@ -3,18 +3,18 @@ description: 'Pulls an Amplify Flutter project backend and creates the amplifyco
 author: 'Dillon Nys'
 inputs:
   app-id:
-    description: 'The Amplify App ID of your project'
-    required: true
-  env-name:
-    description: 'The Amplify environment name to pull'
-    required: true
-    default: dev
-  region:
-    description: 'The AWS region where your project is hosted'
+    description: 'The Amplify App ID of your project.'
     required: true
   role-arn:
-    description: 'The IAM role to assume'
+    description: 'The IAM role to assume.'
     required: true
+  region:
+    description: 'The AWS region where your project is hosted.'
+    required: true
+  env-name:
+    description: 'The Amplify environment to pull.'
+    required: true
+    default: dev
   version:
     description: 'The Amplify CLI version to use (e.g. "7.6.10"). Defaults to "latest".'
     required: false
