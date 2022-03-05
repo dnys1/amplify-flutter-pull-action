@@ -1,0 +1,45 @@
+name: 'Amplify Flutter Pull'
+description: 'Pulls an Amplify Flutter project backend and creates the amplifyconfiguration.dart file.'
+inputs:
+  app-id:
+    description: 'The Amplify App ID of your project'
+    required: true
+  env-name:
+    description: 'The Amplify environment name to pull'
+    required: true
+    default: dev
+  region:
+    description: 'The AWS region where your project is hosted'
+    required: true
+  role-arn:
+    description: 'The IAM role to assume'
+    required: true
+  version:
+    description: 'The Amplify CLI version to use (e.g. "7.6.10"). Defaults to "latest".'
+    required: false
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Node
+      uses: actions/setup-node@v2
+      with:
+        # Preferred version for Amplify CLI
+        node-version: '14'
+    - name: Setup Amplify
+      shell: bash
+      run: setup.sh
+      env:
+        AMPLIFY_VERSION: ${{ inputs.version }}
+    - name: Setup AWS
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: ${{ inputs.role-arn }}
+        role-session-name: ${{ github.action }}
+        aws-region: ${{ inputs.region }}
+    - name: Pull Amplify project
+      shell: bash
+      run: pull.sh
+      env:
+        AWS_REGION: ${{ inputs.region }}
+        AMPLIFY_APP_ID: ${{ inputs.app-id }}
+        AMPLIFY_ENV_NAME: ${{ inputs.env-name }}
