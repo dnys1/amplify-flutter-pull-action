@@ -15,6 +15,10 @@ inputs:
     description: 'The Amplify environment to pull.'
     required: true
     default: dev
+  session-name:
+    description: 'The AWS roleSessionName associated with the GitHub action.'
+    required: false
+    default: ${{ github.actor }}-${{ github.workflow }}-${{ github.action }}
   version:
     description: 'The Amplify CLI version to use (e.g. "7.6.10"). Defaults to "latest".'
     required: false
@@ -35,7 +39,7 @@ runs:
       uses: aws-actions/configure-aws-credentials@v1
       with:
         role-to-assume: ${{ inputs.role-arn }}
-        role-session-name: ${{ github.actor }}-${{ github.workflow }}-${{ github.action }}
+        role-session-name: ${{ inputs.session-name }}
         aws-region: ${{ inputs.region }}
     - name: Pull Amplify project
       shell: bash
