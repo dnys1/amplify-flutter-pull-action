@@ -75,10 +75,11 @@ See the [Habitr](https://github.com/dnys1/habitr/blob/main/.github/workflows/dep
 
 The action supports the following inputs:
 
-| Input Name | Required | Default | Description |
-| ---------- | -------- | ------- | ----------- |
-| app-id | x | | The Amplify App ID of your project. |
-| role-arn | x | | The Role ARN from `Getting Started`. |
-| region | x | | The AWS region where your project is hosted. |
-| env-name | | `dev` | The Amplify environment to pull. |
-| version | | latest | The Amplify CLI version to use. |
+| Input Name   | Required | Default                  | Description                                                                                                 |
+|--------------| -------- |--------------------------|-------------------------------------------------------------------------------------------------------------|
+| app-id       | x |                          | The Amplify App ID of your project.                                                                         |
+| role-arn     | x |                          | The Role ARN from `Getting Started`.                                                                        |
+| region       | x |                          | The AWS region where your project is hosted.                                                                |
+| session-name | | $actor-$workflow-$action | Defaults to a concatenation of the GitHub properties, but you can override with your own values if desired. |
+| env-name     | | `dev`                    | The Amplify environment to pull.                                                                            |
+| version      | | latest                   | The Amplify CLI version to use.                                                                             |
